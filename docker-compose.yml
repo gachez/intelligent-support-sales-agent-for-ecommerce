@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  # ========================================
+  # PostgreSQL with pgvector
+  # ========================================
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: agent-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ai_sales_agent
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agent_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Run initial migration on first boot
+      - ./src/models/migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/001_initial_schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agent -d ai_sales_agent"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # Node.js Application
+  # ========================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agent-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://agent:agent_dev_password@db:5432/ai_sales_agent
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npx tsx watch src/index.ts
+
+volumes:
+  pgdata:
+    driver: local
