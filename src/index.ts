@@ -6,6 +6,8 @@ import { requestLogger, errorHandler } from "./middleware/logger";
 import healthRoutes from "./routes/health";
 import productRoutes from "./routes/products";
 import knowledgeRoutes from "./routes/knowledge";
+import chatRoutes from "./routes/chat";
+
 
 const app = express();
 
@@ -33,6 +35,7 @@ app.use(requestLogger);
 app.use("/health", healthRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/admin/knowledge", knowledgeRoutes);
+app.use("/api/chat", chatRoutes);
 
 // 404 handler
 app.use((req, res) => {

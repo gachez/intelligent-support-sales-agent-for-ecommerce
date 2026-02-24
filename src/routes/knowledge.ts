@@ -1,14 +1,15 @@
 import { Router, Request, Response } from "express";
 import multer from "multer";
 import { RAGService } from "../services/rag.service";
+import { getOrCreateDefaultStore } from "@/utils/init-store";
 
 const router = Router();
 const ragService = new RAGService();
 
-// Set up multer to store files in memory (RAM) temporarily
+// Set up multer to store files in memory temporarily
 const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 });
 
 /**
@@ -16,31 +17,70 @@ const upload = multer({
  * Uploads a document (PDF/TXT) and extracts its text.
  */
 router.post("/upload", upload.single("file"), async (req: Request, res: Response): Promise<void> => {
-  try {
-    if (!req.file) {
-      res.status(400).json({ success: false, error: "No file uploaded." });
-      return;
-    }
+    try {
+        if (!req.file) {
+            res.status(400).json({ success: false, error: "No file uploaded." });
+            return;
+        }
 
-    const { originalname, buffer, mimetype } = req.file;
+        const { originalname, buffer, mimetype } = req.file;
 
-    // 1. Extract the text
-    const extractedText = await ragService.extractTextFromFile(buffer, mimetype);
+        // 1. Get Store and extract and chunk text
+        const storeId = await getOrCreateDefaultStore();
+        const extractedText = await ragService.extractTextFromFile(buffer, mimetype);
 
-    // TODO: S1-02 Chunking and S1-03 Embedding will go here!
+        // 2. Split the text into overlapping chunks
+        // We are passing smaller numbers here (50 max, 10 overlap) just to test it with our small text file!
+        const chunks = ragService.chunkText(extractedText, 50, 10);
+// 3. Generate Embeddings and Save to Database
+    await ragService.embedAndStoreChunks(storeId, originalname, chunks);
 
     res.json({
       success: true,
-      message: "File successfully parsed.",
+      message: `Successfully processed and embedded ${chunks.length} chunk(s) into pgvector!`,
       filename: originalname,
-      textLength: extractedText.length,
-      preview: extractedText.substring(0, 200) + "...", // Show the first 200 chars
+      totalChunks: chunks.length
     });
   } catch (error: any) {
-    console.error("Knowledge upload error:", error.message);
+    console.error("Knowledge upload error:", error);
     res.status(500).json({
       success: false,
       error: error.message || "Failed to process document.",
+    });
+  }
+});
+
+/**
+ * GET /api/admin/knowledge/search
+ * Tests the vector similarity search.
+ * Query params: q (string), limit (number)
+ */
+router.get("/search", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const query = req.query.q as string;
+    const limit = parseInt(req.query.limit as string) || 3;
+
+    if (!query) {
+      res.status(400).json({ success: false, error: "Missing query parameter 'q'." });
+      return;
+    }
+
+    const storeId = await getOrCreateDefaultStore();
+    
+    // Perform the vector search!
+    const results = await ragService.searchKnowledge(storeId, query, limit);
+
+    res.json({
+      success: true,
+      query,
+      count: results.length,
+      results
+    });
+  } catch (error: any) {
+    console.error("Knowledge search error:", error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message || "Failed to search knowledge base.",
     });
   }
 });
