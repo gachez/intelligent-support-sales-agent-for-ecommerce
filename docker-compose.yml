@@ -43,6 +43,7 @@ services:
       - .env
     volumes:
       - ./src:/app/src
+      - ./demo:/app/demo
       - ./package.json:/app/package.json
     depends_on:
       db:

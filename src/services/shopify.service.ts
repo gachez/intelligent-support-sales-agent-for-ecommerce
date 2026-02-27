@@ -95,6 +95,55 @@ export class ShopifyService {
     return result.data;
   }
 
+/**
+   * Fetches all active products for the embedding sync
+   */
+  async fetchAllProductsForSync(): Promise<any[]> {
+    const graphql = `
+      query FetchProductsForSync {
+        products(first: 50, query: "status:ACTIVE") {
+          edges {
+            node {
+              id
+              title
+              description
+              tags
+              totalInventory
+              featuredImage {
+                url
+              }
+              variants(first: 10) {
+                edges {
+                  node {
+                    id
+                    title
+                    price
+                    inventoryQuantity
+                    availableForSale
+                    sku
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    try {
+      const data = await this.query<{
+        products: {
+          edges: Array<{ node: any }>;
+        };
+      }>(graphql);
+
+      return data.products.edges.map((edge) => edge.node);
+    } catch (error) {
+      console.error("Shopify sync fetch error:", error);
+      throw new Error("Failed to fetch products for sync");
+    }
+  }
+  
   /**
    * Fetch products with optional search query.
    * Maps to ticket S0-04.
@@ -410,4 +459,6 @@ export class ShopifyService {
       plan: data.shop.plan.displayName,
     };
   }
+
+
 }

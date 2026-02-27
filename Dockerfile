@@ -9,6 +9,7 @@ RUN npm install
 # Copy source
 COPY tsconfig.json ./
 COPY src/ ./src/
+COPY demo/ ./demo/
 
 EXPOSE 3000
 

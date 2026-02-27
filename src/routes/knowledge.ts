@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import multer from "multer";
 import { RAGService } from "../services/rag.service";
 import { getOrCreateDefaultStore } from "@/utils/init-store";
+import { db } from "../config/database";
+import { sql } from "drizzle-orm";
 
 const router = Router();
 const ragService = new RAGService();
@@ -82,6 +84,33 @@ router.get("/search", async (req: Request, res: Response): Promise<void> => {
       success: false,
       error: error.message || "Failed to search knowledge base.",
     });
+  }
+});
+
+/**
+ * GET /api/admin/knowledge/documents
+ * Lists all distinct documents in the knowledge base with their chunk count.
+ * Powers the document list on the admin demo page.
+ */
+router.get("/documents", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const storeId = await getOrCreateDefaultStore();
+
+    const results = await db.execute(sql`
+      SELECT
+        source                        AS "filename",
+        COUNT(*)::int                 AS "chunkCount",
+        MIN(created_at)               AS "uploadedAt"
+      FROM knowledge_chunks
+      WHERE store_id = ${storeId}
+      GROUP BY source
+      ORDER BY MIN(created_at) DESC;
+    `);
+
+    res.json({ success: true, documents: results.rows });
+  } catch (error: any) {
+    console.error("Knowledge documents list error:", error.message);
+    res.status(500).json({ success: false, error: "Failed to list documents." });
   }
 });
 

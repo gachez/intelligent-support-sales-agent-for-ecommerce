@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merchant Admin — AI Sales Agent</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --radius: 12px;
+      --success: #059669;
+      --error: #dc2626;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(79,70,229,.3);
+    }
+    .header h1 { font-size: 1.1rem; font-weight: 700; }
+    .header .subtitle { font-size: .8rem; opacity: .75; margin-top: 1px; }
+    .header-right { margin-left: auto; }
+    .nav-link {
+      color: rgba(255,255,255,.85);
+      text-decoration: none;
+      font-size: .82rem;
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 8px;
+      transition: background .15s;
+    }
+    .nav-link:hover { background: rgba(255,255,255,.15); }
+
+    /* ── Page layout ── */
+    .page { max-width: 860px; margin: 36px auto; padding: 0 24px; display: flex; flex-direction: column; gap: 28px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-icon { font-size: 1.4rem; }
+    .card-title { font-size: 1rem; font-weight: 700; }
+    .card-subtitle { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
+    .card-body { padding: 24px; }
+
+    /* ── Upload form ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary);
+      background: #eef2ff;
+    }
+    .upload-zone input[type="file"] { display: none; }
+    .upload-zone .upload-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .upload-zone p { color: var(--text-muted); font-size: .88rem; }
+    .upload-zone strong { color: var(--primary); }
+    .selected-file {
+      margin-top: 12px;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: .85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      display: none;
+    }
+    .selected-file.visible { display: flex; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px;
+      border: none;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-outline:hover:not(:disabled) { background: #eef2ff; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ── Document list ── */
+    .doc-list { display: flex; flex-direction: column; gap: 0; margin-top: 20px; }
+    .doc-list-header {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 90px 120px;
+      gap: 12px;
+    }
+    .doc-row {
+      display: grid;
+      grid-template-columns: 1fr 90px 120px;
+      gap: 12px;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+    }
+    .doc-row:last-child { border-bottom: none; }
+    .doc-name { display: flex; align-items: center; gap: 10px; font-size: .88rem; font-weight: 500; }
+    .doc-icon { font-size: 1.1rem; }
+    .doc-chunks {
+      font-size: .82rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 3px 10px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .doc-date { font-size: .78rem; color: var(--text-muted); }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+      font-size: .9rem;
+    }
+    .empty-state .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    /* ── Proof badge ── */
+    .proof-banner {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: .86rem;
+      color: #14532d;
+      margin-top: 20px;
+    }
+    .proof-banner .proof-icon { font-size: 1.3rem; flex-shrink: 0; }
+
+    /* ── Sync section ── */
+    .sync-result {
+      margin-top: 16px;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: .88rem;
+      display: none;
+    }
+    .sync-result.visible { display: block; }
+    .sync-result.success { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
+    .sync-result.error   { background: #fee2e2; color: #7f1d1d; border: 1px solid #fecaca; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: #1e293b;
+      color: #fff;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: .88rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s ease;
+      max-width: 320px;
+      z-index: 100;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.toast-success { background: #14532d; }
+    #toast.toast-error   { background: #7f1d1d; }
+
+    /* ── Loading spinner ── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .spinner.visible { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div>🛠️</div>
+  <div>
+    <h1>Merchant Admin Panel</h1>
+    <div class="subtitle">Manage knowledge base &amp; product catalog</div>
+  </div>
+  <div class="header-right">
+    <a class="nav-link" href="/demo/index.html">← Chat Demo</a>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════
+       KNOWLEDGE BASE SECTION
+  ══════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📚</div>
+      <div>
+        <div class="card-title">Knowledge Base</div>
+        <div class="card-subtitle">Upload store policies and FAQs. The AI uses these documents to answer customer support questions.</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- Upload zone -->
+      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept=".txt,.pdf" onchange="onFileSelected(event)" />
+        <div class="upload-icon">📄</div>
+        <p>Drop a file here or <strong>click to browse</strong></p>
+        <p style="margin-top:6px;font-size:.78rem">Supports .txt and .pdf — max 10 MB</p>
+      </div>
+
+      <div class="selected-file" id="selectedFile">
+        <span>📎</span>
+        <span id="selectedFileName"></span>
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:12px">
+        <button class="btn btn-primary" id="uploadBtn" onclick="uploadFile()" disabled>
+          <span class="spinner" id="uploadSpinner"></span>
+          <span id="uploadBtnText">Upload &amp; Embed</span>
+        </button>
+        <button class="btn btn-outline" onclick="clearFile()">Clear</button>
+      </div>
+
+      <!-- Document list -->
+      <div id="docListSection">
+        <div class="doc-list-header">
+          <span>Document</span>
+          <span style="text-align:center">Chunks</span>
+          <span>Uploaded</span>
+        </div>
+        <div class="doc-list" id="docList">
+          <div class="empty-state">
+            <div class="empty-icon">📂</div>
+            Loading documents…
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT SYNC SECTION
+  ══════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🛍️</div>
+      <div>
+        <div class="card-title">Product Catalog Sync</div>
+        <div class="card-subtitle">Pull active products from Shopify, generate AI embeddings, and store them for semantic search.</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:20px;line-height:1.6">
+        This syncs every active product from your Shopify store into the vector database.
+        Once synced, shoppers can search using natural language — e.g.
+        <em>"waterproof boots under $150"</em> — and the AI will find the closest matches
+        even if the exact words don't appear in the product title.
+      </p>
+
+      <button class="btn btn-primary btn-full" id="syncBtn" onclick="syncProducts()" style="max-width:280px">
+        <span class="spinner" id="syncSpinner"></span>
+        <span id="syncBtnText">⚡ Sync Products from Shopify</span>
+      </button>
+
+      <div class="sync-result" id="syncResult"></div>
+
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+  const API = '';   // same origin
+
+  // ── Load documents on page load ─────────────────────────────────────────
+  loadDocuments();
+
+  async function loadDocuments() {
+    try {
+      const res  = await fetch(`${API}/api/admin/knowledge/documents`);
+      const data = await res.json();
+      renderDocList(data.documents || []);
+    } catch {
+      renderDocList([]);
+    }
+  }
+
+  function renderDocList(docs) {
+    const el = document.getElementById('docList');
+    if (!docs.length) {
+      el.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📂</div>
+          No documents uploaded yet. Upload a policy or FAQ document above.
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = docs.map(d => {
+      const icon = d.filename.endsWith('.pdf') ? '📕' : '📄';
+      const date = new Date(d.uploadedAt).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      });
+      return `
+        <div class="doc-row">
+          <div class="doc-name">
+            <span class="doc-icon">${icon}</span>
+            <span>${escHtml(d.filename)}</span>
+          </div>
+          <div class="doc-chunks">${d.chunkCount} chunks</div>
+          <div class="doc-date">${date}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── File selection ───────────────────────────────────────────────────────
+  let selectedFile = null;
+
+  function onFileSelected(event) {
+    selectedFile = event.target.files[0];
+    if (!selectedFile) return;
+    document.getElementById('selectedFileName').textContent = selectedFile.name;
+    document.getElementById('selectedFile').classList.add('visible');
+    document.getElementById('uploadBtn').disabled = false;
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('selectedFile').classList.remove('visible');
+    document.getElementById('uploadBtn').disabled = true;
+  }
+
+  // Drag-and-drop
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      selectedFile = file;
+      document.getElementById('selectedFileName').textContent = file.name;
+      document.getElementById('selectedFile').classList.add('visible');
+      document.getElementById('uploadBtn').disabled = false;
+    }
+  });
+
+  // ── Upload ───────────────────────────────────────────────────────────────
+  async function uploadFile() {
+    if (!selectedFile) return;
+
+    setUploadLoading(true);
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const res  = await fetch(`${API}/api/admin/knowledge/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showToast(`✅ "${data.filename}" embedded into ${data.totalChunks} chunks`, 'success');
+        clearFile();
+        await loadDocuments();   // refresh the list
+      } else {
+        showToast(`❌ Upload failed: ${data.error}`, 'error');
+      }
+    } catch {
+      showToast('❌ Could not reach the server.', 'error');
+    } finally {
+      setUploadLoading(false);
+    }
+  }
+
+  function setUploadLoading(loading) {
+    document.getElementById('uploadSpinner').classList.toggle('visible', loading);
+    document.getElementById('uploadBtnText').textContent = loading ? 'Processing…' : 'Upload & Embed';
+    document.getElementById('uploadBtn').disabled = loading;
+  }
+
+  // ── Product sync ─────────────────────────────────────────────────────────
+  async function syncProducts() {
+    setSyncLoading(true);
+    const resultEl = document.getElementById('syncResult');
+    resultEl.className = 'sync-result';
+
+    try {
+      const res  = await fetch(`${API}/api/admin/sync-products`, { method: 'POST' });
+      const data = await res.json();
+
+      resultEl.classList.add('visible');
+      if (data.success) {
+        resultEl.classList.add('success');
+        resultEl.textContent = `✅ ${data.message}`;
+        showToast(data.message, 'success');
+      } else {
+        resultEl.classList.add('error');
+        resultEl.textContent = `❌ ${data.error}`;
+        showToast(`Sync failed: ${data.error}`, 'error');
+      }
+    } catch {
+      resultEl.classList.add('visible', 'error');
+      resultEl.textContent = '❌ Could not reach the server.';
+      showToast('Could not reach the server.', 'error');
+    } finally {
+      setSyncLoading(false);
+    }
+  }
+
+  function setSyncLoading(loading) {
+    document.getElementById('syncSpinner').classList.toggle('visible', loading);
+    document.getElementById('syncBtnText').textContent = loading ? 'Syncing…' : '⚡ Sync Products from Shopify';
+    document.getElementById('syncBtn').disabled = loading;
+  }
+
+  // ── Toast ────────────────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `show ${type ? 'toast-' + type : ''}`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.className = ''; }, 4000);
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import { env } from "./config/env";
 import { testConnection } from "./config/database";
 import { requestLogger, errorHandler } from "./middleware/logger";
@@ -7,6 +8,7 @@ import healthRoutes from "./routes/health";
 import productRoutes from "./routes/products";
 import knowledgeRoutes from "./routes/knowledge";
 import chatRoutes from "./routes/chat";
+import adminRoutes from "./routes/admin";
 
 
 const app = express();
@@ -30,12 +32,18 @@ app.use(express.json({ limit: "10mb" }));
 app.use(requestLogger);
 
 // ========================================
+// DEMO UI (static files served at /demo)
+// ========================================
+app.use("/demo", express.static(path.join(__dirname, "..", "demo")));
+
+// ========================================
 // ROUTES
 // ========================================
 app.use("/health", healthRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/admin/knowledge", knowledgeRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/admin", adminRoutes);
 
 // 404 handler
 app.use((req, res) => {
