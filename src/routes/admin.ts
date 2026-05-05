@@ -3,13 +3,16 @@ import { ShopifyService } from "../services/shopify.service";
 import { RAGService } from "../services/rag.service";
 import { getOrCreateDefaultStore } from "../utils/init-store";
 import { db } from "../config/database";
-import { products } from "../models/schema";
-import { sql } from "drizzle-orm";
+import { products, draftOrders, pricingEvents } from "../models/schema";
+import { sql, desc } from "drizzle-orm";
 import { AzureOpenAI } from "openai";
 import { env } from "../config/env";
+import { PricingService } from "../services/pricing.service";
+import { pricingConfigUpdateSchema } from "../schemas/pricing.schema";
 
 const router = Router();
 const shopifyService = new ShopifyService();
+const pricingService = new PricingService();
 // We'll use the AI client directly here to embed product summaries
 const ai = new AzureOpenAI({
   endpoint: env.AZURE_OPENAI_ENDPOINT,
@@ -33,15 +36,19 @@ router.post("/sync-products", async (req: Request, res: Response): Promise<void>
 
     // 2. Process and embed each product
     for (const prod of shopifyProducts) {
-      const variantNodes = (prod.variants?.edges ?? []).map((e: any) => e.node);
-      const lowestPrice = variantNodes[0]?.price || "0";
+      const currencyCode = prod.priceRange?.minVariantPrice?.currencyCode ?? null;
+      const variantNodes = (prod.variants?.edges ?? []).map((e: any) => ({
+        ...e.node,
+        currencyCode,
+      }));
+      const lowestPrice = prod.priceRange?.minVariantPrice?.amount ?? variantNodes[0]?.price ?? "0";
       const tags = (prod.tags ?? []).join(", ");
       const imageUrl = prod.featuredImage?.url ?? null;
       const totalInventory = prod.totalInventory ?? 0;
 
       // Rich text for embedding — includes price, tags, and variant names for relevance
       const variantTitles = variantNodes.map((v: any) => v.title).join(", ");
-      const productSummary = `Product: ${prod.title}. Description: ${prod.description}. Tags: ${tags}. Variants: ${variantTitles}. Starting Price: $${lowestPrice}.`;
+      const productSummary = `Product: ${prod.title}. Description: ${prod.description}. Tags: ${tags}. Variants: ${variantTitles}. Starting Price: ${formatMoneyForEmbedding(lowestPrice, currencyCode)}.`;
 
       // Generate embedding
       const embedResponse = await ai.embeddings.create({
@@ -106,4 +113,103 @@ router.post("/sync-products", async (req: Request, res: Response): Promise<void>
   }
 });
 
+/**
+ * GET /api/admin/discounts/config
+ * Returns the current pricing configuration for the store.
+ */
+router.get("/discounts/config", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const storeId = await getOrCreateDefaultStore();
+    const config = await pricingService.getConfig(storeId);
+
+    res.json({ success: true, config });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * POST /api/admin/discounts/config
+ * Updates the pricing configuration used by the negotiation engine.
+ */
+router.post("/discounts/config", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const storeId = await getOrCreateDefaultStore();
+    const parsed = pricingConfigUpdateSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      res.status(400).json({
+        success: false,
+        error: "Invalid pricing configuration.",
+        details: parsed.error.flatten(),
+      });
+      return;
+    }
+
+    const config = await pricingService.updateConfig(storeId, parsed.data);
+    res.json({ success: true, config });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * GET /api/admin/pricing/events
+ * Returns the most recent pricing events for the admin demo.
+ */
+router.get("/pricing/events", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const rows = await db
+      .select({
+        id: pricingEvents.id,
+        sessionId: pricingEvents.sessionId,
+        contextVector: pricingEvents.contextVector,
+        armSelected: pricingEvents.armSelected,
+        discountCode: pricingEvents.discountCode,
+        outcome: pricingEvents.outcome,
+        reward: pricingEvents.reward,
+        createdAt: pricingEvents.createdAt,
+        resolvedAt: pricingEvents.resolvedAt,
+      })
+      .from(pricingEvents)
+      .orderBy(desc(pricingEvents.createdAt))
+      .limit(20);
+
+    res.json({ success: true, events: rows });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * GET /api/admin/orders
+ * Returns the 20 most recent draft orders with saga log for the admin panel.
+ */
+router.get("/orders", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const rows = await db
+      .select({
+        id: draftOrders.id,
+        shopifyDraftOrderId: draftOrders.shopifyDraftOrderId,
+        checkoutUrl: draftOrders.checkoutUrl,
+        lineItems: draftOrders.lineItems,
+        status: draftOrders.status,
+        sagaLog: draftOrders.sagaLog,
+        discountPercent: draftOrders.discountPercent,
+        createdAt: draftOrders.createdAt,
+      })
+      .from(draftOrders)
+      .orderBy(desc(draftOrders.createdAt))
+      .limit(20);
+
+    res.json({ success: true, orders: rows });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;
+
+function formatMoneyForEmbedding(amount: string, currencyCode: string | null): string {
+  return currencyCode ? `${currencyCode} ${amount}` : amount;
+}

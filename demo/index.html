@@ -72,7 +72,6 @@
       display: flex;
       flex: 1;
       overflow: hidden;
-      gap: 0;
     }
 
     /* ── Sidebar ── */
@@ -83,7 +82,7 @@
       display: flex;
       flex-direction: column;
       padding: 20px 16px;
-      gap: 20px;
+      gap: 24px;
       overflow-y: auto;
       flex-shrink: 0;
     }
@@ -113,9 +112,24 @@
     .preset-btn:hover { background: #e0e7ff; border-color: var(--primary); color: var(--primary); }
     .preset-btn .icon { font-size: 1rem; flex-shrink: 0; }
 
+    .preset-group { display: flex; flex-direction: column; gap: 6px; }
+
     .intent-legend { display: flex; flex-direction: column; gap: 6px; }
     .legend-row { display: flex; align-items: center; gap: 8px; font-size: .78rem; }
     .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    .new-session-btn {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      font-size: .8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .new-session-btn:hover { border-color: var(--primary); color: var(--primary); }
 
     /* ── Chat main ── */
     .chat-main {
@@ -160,6 +174,7 @@
       font-size: .9rem;
       line-height: 1.55;
       max-width: 560px;
+      white-space: pre-wrap;
     }
     .msg-row.user .bubble {
       background: var(--user-bubble);
@@ -227,11 +242,13 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      width: 170px;
+      width: 180px;
       flex-shrink: 0;
       overflow: hidden;
       box-shadow: 0 1px 4px rgba(0,0,0,.07);
       transition: transform .15s, box-shadow .15s;
+      display: flex;
+      flex-direction: column;
     }
     .product-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
 
@@ -242,10 +259,11 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 2rem;
       color: #a5b4fc;
+      flex-shrink: 0;
     }
     .product-img img { width: 100%; height: 100%; object-fit: cover; }
 
-    .product-info { padding: 10px; }
+    .product-info { padding: 10px; flex: 1; display: flex; flex-direction: column; }
     .product-title { font-size: .8rem; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
     .product-price { font-size: .9rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
     .stock-label {
@@ -256,11 +274,11 @@
       border-radius: 4px;
       margin-bottom: 6px;
     }
-    .stock-in     { background: #dcfce7; color: #166534; }
-    .stock-low    { background: #fef3c7; color: #92400e; }
-    .stock-out    { background: #fee2e2; color: #991b1b; }
+    .stock-in  { background: #dcfce7; color: #166534; }
+    .stock-low { background: #fef3c7; color: #92400e; }
+    .stock-out { background: #fee2e2; color: #991b1b; }
 
-    .variant-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+    .variant-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
     .variant-pill {
       font-size: .65rem;
       background: var(--bg);
@@ -268,6 +286,119 @@
       border-radius: 4px;
       padding: 2px 6px;
       color: var(--text-muted);
+    }
+
+    .buy-btn {
+      margin-top: auto;
+      width: 100%;
+      padding: 7px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .buy-btn:hover { background: var(--primary-dark); }
+
+    /* ── Checkout card ── */
+    .checkout-card {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 4px;
+      max-width: 400px;
+    }
+    .checkout-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: .9rem;
+      color: #92400e;
+      margin-bottom: 10px;
+    }
+    .checkout-link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      background: #d97706;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .checkout-link-btn:hover { background: #b45309; }
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #dcfce7;
+      color: #166534;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: .68rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* ── Pricing offer card ── */
+    .offer-card {
+      background: linear-gradient(135deg, #f5f3ff 0%, #eef2ff 100%);
+      border: 1px solid #c4b5fd;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 4px;
+      max-width: 420px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .offer-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: .9rem;
+      color: #5b21b6;
+      margin-bottom: 8px;
+    }
+    .offer-code {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1px dashed #a78bfa;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .82rem;
+      font-weight: 700;
+      color: #4c1d95;
+      margin-top: 10px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .offer-code span { color: #6d28d9; font-weight: 600; }
+
+    /* ── Error card ── */
+    .error-card {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: .85rem;
+      color: #991b1b;
+      margin-top: 4px;
+      max-width: 400px;
     }
 
     /* ── Typing indicator ── */
@@ -339,7 +470,7 @@
   <div>🤖</div>
   <div>
     <h1>AI Sales Agent</h1>
-    <div class="subtitle">Sprint 2 Demo — Semantic Search &amp; Conversational Support</div>
+    <div class="subtitle">Sprint 3 Demo — Agentic Checkout (SagaLLM)</div>
   </div>
   <div class="header-right">
     <span class="session-pill" id="sessionPill">No session</span>
@@ -352,23 +483,31 @@
   <!-- ── Sidebar ── -->
   <aside class="sidebar">
 
+    <div>
+      <h3>Sprint 3 — Checkout Flow</h3>
+    </div>
 
     <div>
-      <h3>Intents</h3>
-      <div class="intent-legend">
-        <div class="legend-row"><div class="legend-dot" style="background:var(--intent-product)"></div> Product Search</div>
-        <div class="legend-row"><div class="legend-dot" style="background:var(--intent-support)"></div> Support Question</div>
-        <div class="legend-row"><div class="legend-dot" style="background:var(--intent-purchase)"></div> Purchase Intent</div>
-        <div class="legend-row"><div class="legend-dot" style="background:var(--intent-general)"></div> General Chat</div>
-      </div>
+      <h3>Sprint 4 — Negotiation</h3>
+
     </div>
+
+    <div>
+      <h3>Sprint 1 &amp; 2 — RAG &amp; Search</h3>
+
+    </div>
+
+    <div>
+      <h3>Intent Legend</h3>
+    </div>
+
+    <button class="new-session-btn" onclick="newSession()">↺ New Session</button>
+
   </aside>
 
   <!-- ── Chat main ── -->
   <main class="chat-main">
-    <div class="messages" id="messages">
-      <!-- Welcome message -->
-    </div>
+    <div class="messages" id="messages"></div>
     <div class="input-area">
       <input
         type="text"
@@ -382,7 +521,7 @@
 </div>
 
 <script>
-  const API = '';   // same origin — served by Express at /demo/
+  const API    = '';
   const LS_KEY = 'agent_guest_token';
 
   let guestToken = localStorage.getItem(LS_KEY) || null;
@@ -392,21 +531,26 @@
   const inputEl    = document.getElementById('msgInput');
   const sendBtn    = document.getElementById('sendBtn');
 
-  // ── Render welcome bubble on load ──────────────────────────────────────────
   appendAssistantMessage(
-    "Hi! I'm your AI sales assistant. I can help you find products, answer support questions, and more. What are you looking for today?",
-    'GENERAL_CHAT',
-    [], []
+    "Hi! I'm your AI sales assistant. I can help you find products, answer support questions, and even create checkout links for you. What are you looking for today?",
+    'GENERAL_CHAT', [], []
   );
 
-  // ── Send on Enter ──────────────────────────────────────────────────────────
   inputEl.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   });
 
-  function sendPreset(text) {
-    inputEl.value = text;
-    sendMessage();
+  function sendPreset(text) { inputEl.value = text; sendMessage(); }
+
+  function newSession() {
+    localStorage.removeItem(LS_KEY);
+    guestToken = null;
+    updateSessionPill();
+    messagesEl.innerHTML = '';
+    appendAssistantMessage(
+      "New session started. How can I help you today?",
+      'GENERAL_CHAT', [], []
+    );
   }
 
   // ── Core send ──────────────────────────────────────────────────────────────
@@ -433,11 +577,10 @@
       removeTyping(typingId);
 
       if (!data.success) {
-        appendAssistantMessage(`⚠️ Error: ${data.error}`, 'GENERAL_CHAT', [], []);
+        appendAssistantMessage(`Error: ${data.error}`, 'GENERAL_CHAT', [], []);
         return;
       }
 
-      // Persist the guest token
       if (data.guest_token && data.guest_token !== guestToken) {
         guestToken = data.guest_token;
         localStorage.setItem(LS_KEY, guestToken);
@@ -445,15 +588,15 @@
       }
 
       appendAssistantMessage(
-        data.answer  || '',
-        data.intent  || 'GENERAL_CHAT',
+        data.answer   || '',
+        data.intent   || 'GENERAL_CHAT',
         data.products || [],
         data.sources  || []
       );
 
     } catch (err) {
       removeTyping(typingId);
-      appendAssistantMessage('⚠️ Could not reach the server. Is the backend running?', 'GENERAL_CHAT', [], []);
+      appendAssistantMessage('Could not reach the server. Is the backend running?', 'GENERAL_CHAT', [], []);
     } finally {
       setInputDisabled(false);
       inputEl.focus();
@@ -468,9 +611,7 @@
       <div class="avatar">👤</div>
       <div class="msg-body">
         <div class="bubble">${escHtml(text)}</div>
-        <div class="msg-meta">
-          <span class="timestamp">${now()}</span>
-        </div>
+        <div class="msg-meta"><span class="timestamp">${now()}</span></div>
       </div>`;
     messagesEl.appendChild(row);
     scrollBottom();
@@ -487,12 +628,53 @@
       ? `<div class="source-list">${sources.map(s =>
           `<span class="source-tag">📄 ${escHtml(s)}</span>`).join('')}</div>` : '';
 
+    // Detect checkout URL in PURCHASE_INTENT responses
+    const checkoutUrl = extractUrl(text);
+    let mainContent = '';
+
+    if (intent === 'PURCHASE_INTENT' && checkoutUrl) {
+      // Strip the URL from the text for cleaner display
+      const cleanText = text.replace(checkoutUrl, '').replace(/\s+$/, '').trim();
+      mainContent = `
+        ${cleanText ? `<div class="bubble">${escHtml(cleanText)}</div>` : ''}
+        <div class="checkout-card">
+          <div class="checkout-card-header">🛒 Order Created</div>
+          <a class="checkout-link-btn" href="${checkoutUrl}" target="_blank" rel="noopener">
+            Complete Purchase →
+          </a>
+          <div class="verified-badge">✓ Verified &amp; Secured by Shopify</div>
+        </div>`;
+    } else if (intent === 'NEGOTIATION' && /Use code\s+([A-Z0-9-]+)/i.test(text)) {
+      const match = text.match(/Use code\s+([A-Z0-9-]+)/i);
+      const code = match ? match[1] : 'DISCOUNT';
+      const expiryMatch = text.match(/before\s+([^.]+)\./i);
+      const expiry = expiryMatch ? expiryMatch[1] : 'checkout';
+      mainContent = `
+        <div class="bubble">${escHtml(text)}</div>
+        <div class="offer-card">
+          <div class="offer-card-header">🏷️ Live Offer</div>
+          <div class="offer-code">
+            <span>Code</span>
+            <span>${escHtml(code)}</span>
+          </div>
+          <div style="margin-top:8px;font-size:.8rem;color:#6b21a8">
+            Apply it before ${escHtml(expiry)}.
+          </div>
+        </div>`;
+    } else if (intent === 'PURCHASE_INTENT' && text.toLowerCase().includes('validation failed') || text.toLowerCase().includes('stock changed') || text.toLowerCase().includes('wasn\'t able')) {
+      mainContent = `
+        <div class="bubble">${escHtml(text)}</div>
+        <div class="error-card">⚠️ Could not create order. ${escHtml(text)}</div>`;
+    } else {
+      mainContent = text ? `<div class="bubble">${escHtml(text)}</div>` : '';
+    }
+
     const cardsHtml = products.length ? renderCards(products) : '';
 
     row.innerHTML = `
       <div class="avatar">🤖</div>
       <div class="msg-body">
-        ${text ? `<div class="bubble">${escHtml(text)}</div>` : ''}
+        ${mainContent}
         ${cardsHtml}
         <div class="msg-meta">
           <span class="timestamp">${now()}</span>
@@ -513,9 +695,7 @@
       <div class="avatar">🤖</div>
       <div class="msg-body">
         <div class="typing-bubble">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
         </div>
       </div>`;
     messagesEl.appendChild(row);
@@ -523,9 +703,7 @@
     return id;
   }
 
-  function removeTyping(id) {
-    document.getElementById(id)?.remove();
-  }
+  function removeTyping(id) { document.getElementById(id)?.remove(); }
 
   function renderCards(products) {
     const cards = products.map(p => {
@@ -544,9 +722,10 @@
           ${img}
           <div class="product-info">
             <div class="product-title">${escHtml(p.title)}</div>
-            <div class="product-price">$${parseFloat(p.price).toFixed(2)}</div>
+            <div class="product-price">${escHtml(formatProductPrice(p))}</div>
             <span class="stock-label ${stockClass}">${escHtml(p.stockLabel)}</span>
             ${variants ? `<div class="variant-pills">${variants}</div>` : ''}
+            <button class="buy-btn" onclick="sendPreset('I want to buy the ${escHtml(p.title).replace(/'/g,"\\'")}')">Buy This</button>
           </div>
         </div>`;
     }).join('');
@@ -554,6 +733,48 @@
   }
 
   // ── Utilities ──────────────────────────────────────────────────────────────
+  function normalizeCurrencyCode(currencyCode) {
+    const normalized = String(currencyCode || '').trim().toUpperCase();
+    return /^[A-Z]{3}$/.test(normalized) ? normalized : 'KES';
+  }
+
+  function formatProductPrice(product) {
+    if (product.formattedPrice) return product.formattedPrice;
+
+    const variants = Array.isArray(product.variants) ? product.variants : [];
+    const currencyCode = normalizeCurrencyCode(
+      product.currencyCode || variants.find(v => v.currencyCode)?.currencyCode
+    );
+    let value = Number(product.price || 0);
+
+    if (!Number.isFinite(value)) return `${currencyCode} ${product.price || ''}`.trim();
+    if (currencyCode === 'KES' && value >= 100000 && Number.isInteger(value)) value = value / 100;
+
+    const fractionDigits = Number.isInteger(value) ? 0 : 2;
+    const formatted = new Intl.NumberFormat(currencyCode === 'KES' ? 'en-KE' : 'en-US', {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    }).format(value);
+
+    if (currencyCode === 'KES') return `KSh ${formatted}`;
+
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currencyCode,
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+      }).format(value).replace(/\u00a0/g, ' ');
+    } catch {
+      return `${currencyCode} ${formatted}`;
+    }
+  }
+
+  function extractUrl(text) {
+    const match = text && text.match(/https?:\/\/[^\s]+/);
+    return match ? match[0] : null;
+  }
+
   function intentLabel(intent) {
     return {
       PRODUCT_SEARCH:   'Product Search',
@@ -574,18 +795,15 @@
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function scrollBottom() {
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-  }
+  function scrollBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
 
   function setInputDisabled(disabled) {
-    inputEl.disabled  = disabled;
-    sendBtn.disabled  = disabled;
+    inputEl.disabled = disabled;
+    sendBtn.disabled = disabled;
   }
 
   function updateSessionPill() {
-    const el = document.getElementById('sessionPill');
-    el.textContent = guestToken
+    document.getElementById('sessionPill').textContent = guestToken
       ? `Session: ${guestToken.slice(0,8)}…`
       : 'No session';
   }

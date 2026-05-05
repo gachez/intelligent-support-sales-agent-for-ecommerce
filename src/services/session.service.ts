@@ -74,16 +74,22 @@ export class SessionService {
   async getHistory(
     sessionId: string,
     limit: number = 10
-  ): Promise<Array<{ role: string; content: string }>> {
+  ): Promise<Array<{ role: string; content: string; metadata?: Record<string, any> }>> {
     const rows = await db
-      .select({ role: messages.role, content: messages.content })
+      .select({ role: messages.role, content: messages.content, metadata: messages.metadata })
       .from(messages)
       .where(eq(messages.sessionId, sessionId))
       .orderBy(desc(messages.createdAt))
       .limit(limit);
 
     // Reverse so messages are in chronological order for the LLM
-    return rows.reverse();
+    return rows
+      .map((row) => ({
+        role: row.role,
+        content: row.content,
+        metadata: (row.metadata ?? {}) as Record<string, any>,
+      }))
+      .reverse();
   }
 
   /**

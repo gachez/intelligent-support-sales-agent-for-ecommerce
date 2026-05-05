@@ -35,6 +35,7 @@ app.use(requestLogger);
 // DEMO UI (static files served at /demo)
 // ========================================
 app.use("/demo", express.static(path.join(__dirname, "..", "demo")));
+app.use("/widget", express.static(path.join(__dirname, "..", "public", "widget")));
 
 // ========================================
 // ROUTES

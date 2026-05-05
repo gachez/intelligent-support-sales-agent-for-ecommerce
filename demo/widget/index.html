@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Chat Widget Test</title>
+  <style>
+    :root {
+      --color-primary: #4f46e5;
+      --font-body-family: Inter, system-ui, sans-serif;
+      --buttons-radius: 16px;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body-family);
+      background: #f8fafc;
+      color: #111827;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+
+    p {
+      max-width: 620px;
+      color: #475569;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Storefront Widget Test Page</h1>
+    <p>
+      This page loads the production-style widget bundle through a single script tag.
+      Build the widget first with <code>npm run build:widget</code>.
+    </p>
+  </main>
+
+  <script
+    src="/widget/agent-chat-widget.js"
+    data-api-base=""
+    data-title="AI Shopping Assistant"
+    data-subtitle="Products, offers, support"
+    data-primary-color="#4f46e5"
+  ></script>
+</body>
+</html>

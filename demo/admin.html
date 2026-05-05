@@ -52,7 +52,7 @@
     .nav-link:hover { background: rgba(255,255,255,.15); }
 
     /* ── Page layout ── */
-    .page { max-width: 860px; margin: 36px auto; padding: 0 24px; display: flex; flex-direction: column; gap: 28px; }
+    .page { max-width: 900px; margin: 36px auto; padding: 0 24px; display: flex; flex-direction: column; gap: 28px; }
 
     /* ── Card ── */
     .card {
@@ -74,37 +74,7 @@
     .card-subtitle { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
     .card-body { padding: 24px; }
 
-    /* ── Upload form ── */
-    .upload-zone {
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      padding: 28px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .15s, background .15s;
-    }
-    .upload-zone:hover, .upload-zone.dragover {
-      border-color: var(--primary);
-      background: #eef2ff;
-    }
-    .upload-zone input[type="file"] { display: none; }
-    .upload-zone .upload-icon { font-size: 2.2rem; margin-bottom: 10px; }
-    .upload-zone p { color: var(--text-muted); font-size: .88rem; }
-    .upload-zone strong { color: var(--primary); }
-    .selected-file {
-      margin-top: 12px;
-      background: #eef2ff;
-      border: 1px solid #c7d2fe;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: .85rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      display: none;
-    }
-    .selected-file.visible { display: flex; }
-
+    /* ── Buttons ── */
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 11px 22px;
@@ -127,6 +97,37 @@
     .btn-outline:hover:not(:disabled) { background: #eef2ff; }
     .btn-full { width: 100%; justify-content: center; }
 
+    /* ── Upload zone ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary);
+      background: #eef2ff;
+    }
+    .upload-zone input[type="file"] { display: none; }
+    .upload-zone .upload-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .upload-zone p { color: var(--text-muted); font-size: .88rem; }
+    .upload-zone strong { color: var(--primary); }
+
+    .selected-file {
+      margin-top: 12px;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: .85rem;
+      align-items: center;
+      gap: 8px;
+      display: none;
+    }
+    .selected-file.visible { display: flex; }
+
     /* ── Document list ── */
     .doc-list { display: flex; flex-direction: column; gap: 0; margin-top: 20px; }
     .doc-list-header {
@@ -147,7 +148,6 @@
       align-items: center;
       padding: 13px 0;
       border-bottom: 1px solid var(--border);
-      transition: background .1s;
     }
     .doc-row:last-child { border-bottom: none; }
     .doc-name { display: flex; align-items: center; gap: 10px; font-size: .88rem; font-weight: 500; }
@@ -163,30 +163,7 @@
     }
     .doc-date { font-size: .78rem; color: var(--text-muted); }
 
-    .empty-state {
-      text-align: center;
-      padding: 32px;
-      color: var(--text-muted);
-      font-size: .9rem;
-    }
-    .empty-state .empty-icon { font-size: 2rem; margin-bottom: 8px; }
-
-    /* ── Proof badge ── */
-    .proof-banner {
-      background: #dcfce7;
-      border: 1px solid #bbf7d0;
-      border-radius: 10px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: .86rem;
-      color: #14532d;
-      margin-top: 20px;
-    }
-    .proof-banner .proof-icon { font-size: 1.3rem; flex-shrink: 0; }
-
-    /* ── Sync section ── */
+    /* ── Sync result ── */
     .sync-result {
       margin-top: 16px;
       border-radius: 10px;
@@ -197,6 +174,203 @@
     .sync-result.visible { display: block; }
     .sync-result.success { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
     .sync-result.error   { background: #fee2e2; color: #7f1d1d; border: 1px solid #fecaca; }
+
+    /* ── Orders table ── */
+    .orders-table-wrap { overflow-x: auto; }
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+    .orders-table th {
+      text-align: left;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .orders-table td {
+      padding: 13px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .orders-table tr:last-child td { border-bottom: none; }
+    .orders-table tr:hover td { background: #f8fafc; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .status-committed   { background: #dcfce7; color: #166534; }
+    .status-pending     { background: #fef3c7; color: #92400e; }
+    .status-failed      { background: #fee2e2; color: #991b1b; }
+    .status-rolled_back { background: #f1f5f9; color: #475569; }
+    .status-validated   { background: #dbeafe; color: #1e40af; }
+    .status-offered     { background: #ede9fe; color: #6d28d9; }
+    .status-converted   { background: #dcfce7; color: #166534; }
+    .status-abandoned   { background: #fef3c7; color: #92400e; }
+    .status-expired     { background: #e2e8f0; color: #475569; }
+
+    .checkout-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: .8rem;
+      font-weight: 500;
+    }
+    .checkout-link:hover { text-decoration: underline; }
+
+    .saga-steps { display: flex; flex-direction: column; gap: 3px; }
+    .saga-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+    }
+    .saga-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .saga-succeeded { background: #22c55e; }
+    .saga-failed    { background: #ef4444; }
+    .saga-started   { background: #f59e0b; }
+
+    .line-items-cell { font-size: .8rem; color: var(--text-muted); }
+
+    /* ── Pricing engine ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .pricing-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pricing-field.full { grid-column: 1 / -1; }
+    .pricing-field label {
+      font-size: .74rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .pricing-field input,
+    .pricing-field textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+    }
+    .pricing-field input:focus,
+    .pricing-field textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+    }
+    .pricing-field textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+    .pricing-note {
+      font-size: .82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .pricing-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .pricing-pill {
+      background: #eef2ff;
+      color: var(--primary-dark);
+      border: 1px solid #c7d2fe;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .pricing-status {
+      margin-top: 14px;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: .86rem;
+      display: none;
+    }
+    .pricing-status.visible { display: block; }
+    .pricing-status.success { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
+    .pricing-status.error   { background: #fee2e2; color: #7f1d1d; border: 1px solid #fecaca; }
+    .pricing-status.info    { background: #e0f2fe; color: #0c4a6e; border: 1px solid #bae6fd; }
+
+    .pricing-events {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pricing-event {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pricing-event-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .pricing-event-title {
+      font-size: .86rem;
+      font-weight: 700;
+    }
+    .pricing-event-meta {
+      font-size: .75rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pricing-event-context {
+      font-size: .8rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+      font-size: .9rem;
+    }
+    .empty-state .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .spinner.visible { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Toast ── */
     #toast {
@@ -218,17 +392,18 @@
     #toast.toast-success { background: #14532d; }
     #toast.toast-error   { background: #7f1d1d; }
 
-    /* ── Loading spinner ── */
-    .spinner {
-      width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      display: none;
+    .refresh-btn {
+      margin-left: auto;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: .8rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: border-color .15s, color .15s;
     }
-    .spinner.visible { display: block; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .refresh-btn:hover { border-color: var(--primary); color: var(--primary); }
   </style>
 </head>
 <body>
@@ -237,7 +412,7 @@
   <div>🛠️</div>
   <div>
     <h1>Merchant Admin Panel</h1>
-    <div class="subtitle">Manage knowledge base &amp; product catalog</div>
+    <div class="subtitle">Knowledge base, product catalog &amp; draft orders</div>
   </div>
   <div class="header-right">
     <a class="nav-link" href="/demo/index.html">← Chat Demo</a>
@@ -247,19 +422,50 @@
 <div class="page">
 
   <!-- ══════════════════════════════════════════
-       KNOWLEDGE BASE SECTION
+       DRAFT ORDERS (Sprint 3)
+  ══════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🧾</div>
+      <div style="flex:1">
+        <div class="card-title">Draft Orders</div>
+        <div class="card-subtitle">Orders created by the agent via SagaLLM checkout. Each row shows the saga execution log.</div>
+      </div>
+      <button class="refresh-btn" onclick="loadOrders()">↺ Refresh</button>
+    </div>
+    <div class="card-body">
+      <div class="orders-table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Created</th>
+              <th>Status</th>
+              <th>Line Items</th>
+              <th>Checkout URL</th>
+              <th>Saga Log</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody">
+            <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📋</div>Loading orders…</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       KNOWLEDGE BASE
   ══════════════════════════════════════════ -->
   <div class="card">
     <div class="card-header">
       <div class="card-icon">📚</div>
       <div>
         <div class="card-title">Knowledge Base</div>
-        <div class="card-subtitle">Upload store policies and FAQs. The AI uses these documents to answer customer support questions.</div>
+        <div class="card-subtitle">Upload store policies and FAQs. The AI uses these to answer customer support questions.</div>
       </div>
     </div>
     <div class="card-body">
 
-      <!-- Upload zone -->
       <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
         <input type="file" id="fileInput" accept=".txt,.pdf" onchange="onFileSelected(event)" />
         <div class="upload-icon">📄</div>
@@ -280,7 +486,6 @@
         <button class="btn btn-outline" onclick="clearFile()">Clear</button>
       </div>
 
-      <!-- Document list -->
       <div id="docListSection">
         <div class="doc-list-header">
           <span>Document</span>
@@ -289,8 +494,7 @@
         </div>
         <div class="doc-list" id="docList">
           <div class="empty-state">
-            <div class="empty-icon">📂</div>
-            Loading documents…
+            <div class="empty-icon">📂</div>Loading documents…
           </div>
         </div>
       </div>
@@ -299,23 +503,21 @@
   </div>
 
   <!-- ══════════════════════════════════════════
-       PRODUCT SYNC SECTION
+       PRODUCT SYNC
   ══════════════════════════════════════════ -->
   <div class="card">
     <div class="card-header">
       <div class="card-icon">🛍️</div>
       <div>
         <div class="card-title">Product Catalog Sync</div>
-        <div class="card-subtitle">Pull active products from Shopify, generate AI embeddings, and store them for semantic search.</div>
+        <div class="card-subtitle">Pull active products from Shopify, generate AI embeddings, and store for semantic search.</div>
       </div>
     </div>
     <div class="card-body">
-
       <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:20px;line-height:1.6">
-        This syncs every active product from your Shopify store into the vector database.
-        Once synced, shoppers can search using natural language — e.g.
-        <em>"waterproof boots under $150"</em> — and the AI will find the closest matches
-        even if the exact words don't appear in the product title.
+        Syncs every active product from Shopify into the vector database.
+        Once synced, shoppers can search using natural language and the AI will find semantically similar matches.
+        Run this whenever products are added or updated in Shopify.
       </p>
 
       <button class="btn btn-primary btn-full" id="syncBtn" onclick="syncProducts()" style="max-width:280px">
@@ -324,21 +526,146 @@
       </button>
 
       <div class="sync-result" id="syncResult"></div>
+    </div>
+  </div>
 
+  <!-- ══════════════════════════════════════════
+       PRICING ENGINE
+  ══════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🏷️</div>
+      <div style="flex:1">
+        <div class="card-title">Dynamic Pricing Engine</div>
+        <div class="card-subtitle">Configure negotiation offers, discount caps, and budget limits for Sprint 4.</div>
+      </div>
+      <button class="refresh-btn" onclick="loadPricingConfig()">↺ Refresh</button>
+    </div>
+    <div class="card-body">
+      <p class="pricing-note">
+        Use this panel to control when the agent is allowed to offer a discount. Negotiation messages in the chat demo will use these settings.
+      </p>
+
+      <div class="pricing-grid" style="margin-top:16px">
+        <div class="pricing-field">
+          <label for="pricingEnabled">Enabled</label>
+          <input id="pricingEnabled" type="checkbox" />
+        </div>
+        <div class="pricing-field">
+          <label for="maxDiscountPercent">Max discount (%)</label>
+          <input id="maxDiscountPercent" type="number" min="0" max="15" step="0.5" value="15" />
+        </div>
+        <div class="pricing-field">
+          <label for="hesitationThreshold">Hesitation threshold</label>
+          <input id="hesitationThreshold" type="number" min="0" max="100" step="1" value="55" />
+        </div>
+        <div class="pricing-field">
+          <label for="offerTtlMinutes">Offer TTL (minutes)</label>
+          <input id="offerTtlMinutes" type="number" min="5" max="120" step="1" value="30" />
+        </div>
+        <div class="pricing-field full">
+          <label for="budgetUsd">Budget cap (USD)</label>
+          <input id="budgetUsd" type="number" min="0" step="0.01" placeholder="Leave blank for no cap" />
+        </div>
+        <div class="pricing-field full">
+          <label for="excludedProductIds">Excluded product IDs</label>
+          <textarea id="excludedProductIds" placeholder="Comma-separated Shopify product IDs or GIDs"></textarea>
+        </div>
+      </div>
+
+      <div class="pricing-pill-row">
+        <span class="pricing-pill">Arms: 0%, 5%, 7%, 10%, 15%</span>
+        <span class="pricing-pill">Server-controlled</span>
+        <span class="pricing-pill">Single-use offer</span>
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="savePricingBtn" onclick="savePricingConfig()">
+          <span class="spinner" id="pricingSpinner"></span>
+          <span id="pricingBtnText">Save Pricing Config</span>
+        </button>
+        <button class="btn btn-outline" onclick="loadPricingEvents()">Load Recent Events</button>
+      </div>
+
+      <div class="pricing-status" id="pricingStatus"></div>
+      <div class="pricing-events" id="pricingEvents">
+        <div class="empty-state">
+          <div class="empty-icon">🏷️</div>Loading pricing engine…
+        </div>
+      </div>
     </div>
   </div>
 
 </div><!-- /page -->
 
-<!-- Toast -->
 <div id="toast"></div>
 
 <script>
-  const API = '';   // same origin
+  const API = '';
 
-  // ── Load documents on page load ─────────────────────────────────────────
+  loadOrders();
   loadDocuments();
+  loadPricingConfig();
+  loadPricingEvents();
 
+  // ── Draft Orders ─────────────────────────────────────────────────────────
+  async function loadOrders() {
+    const tbody = document.getElementById('ordersBody');
+    try {
+      const res  = await fetch(`${API}/api/admin/orders`);
+      const data = await res.json();
+      renderOrders(data.orders || []);
+    } catch {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load orders.</div></td></tr>`;
+    }
+  }
+
+  function renderOrders(orders) {
+    const tbody = document.getElementById('ordersBody');
+
+    if (!orders.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📋</div>No draft orders yet. Complete a purchase in the chat to see them here.</div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = orders.map(o => {
+      const date = new Date(o.createdAt).toLocaleString('en-GB', {
+        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+      });
+
+      const statusClass = `status-${o.status}`;
+      const statusLabel = o.status.replace(/_/g, ' ');
+
+      const lineItems = (o.lineItems || []).map(item =>
+        `<div>× ${item.quantity} <span style="font-family:monospace;font-size:.72rem">${item.variantId?.split('/').pop()}</span></div>`
+      ).join('');
+
+      const checkoutCell = o.checkoutUrl
+        ? `<a class="checkout-link" href="${o.checkoutUrl}" target="_blank" rel="noopener">Open →</a>`
+        : `<span style="color:var(--text-muted);font-size:.8rem">—</span>`;
+
+      const sagaSteps = (o.sagaLog || []).map(step => {
+        const dotClass = `saga-${step.status}`;
+        const label = step.step.replace(/_/g, ' ');
+        return `<div class="saga-step">
+          <div class="saga-dot ${dotClass}"></div>
+          <span>${escHtml(label)}</span>
+          ${step.error ? `<span style="color:#ef4444;font-size:.7rem">(${escHtml(step.error.slice(0,40))})</span>` : ''}
+        </div>`;
+      }).join('');
+
+      return `
+        <tr>
+          <td style="white-space:nowrap;font-size:.8rem">${date}</td>
+          <td><span class="status-badge ${statusClass}">${escHtml(statusLabel)}</span></td>
+          <td class="line-items-cell">${lineItems || '—'}</td>
+          <td>${checkoutCell}</td>
+          <td><div class="saga-steps">${sagaSteps || '—'}</div></td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ── Documents ────────────────────────────────────────────────────────────
   async function loadDocuments() {
     try {
       const res  = await fetch(`${API}/api/admin/knowledge/documents`);
@@ -352,14 +679,9 @@
   function renderDocList(docs) {
     const el = document.getElementById('docList');
     if (!docs.length) {
-      el.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📂</div>
-          No documents uploaded yet. Upload a policy or FAQ document above.
-        </div>`;
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📂</div>No documents uploaded yet.</div>`;
       return;
     }
-
     el.innerHTML = docs.map(d => {
       const icon = d.filename.endsWith('.pdf') ? '📕' : '📄';
       const date = new Date(d.uploadedAt).toLocaleDateString('en-GB', {
@@ -367,17 +689,14 @@
       });
       return `
         <div class="doc-row">
-          <div class="doc-name">
-            <span class="doc-icon">${icon}</span>
-            <span>${escHtml(d.filename)}</span>
-          </div>
+          <div class="doc-name"><span class="doc-icon">${icon}</span><span>${escHtml(d.filename)}</span></div>
           <div class="doc-chunks">${d.chunkCount} chunks</div>
           <div class="doc-date">${date}</div>
         </div>`;
     }).join('');
   }
 
-  // ── File selection ───────────────────────────────────────────────────────
+  // ── File upload ──────────────────────────────────────────────────────────
   let selectedFile = null;
 
   function onFileSelected(event) {
@@ -395,7 +714,6 @@
     document.getElementById('uploadBtn').disabled = true;
   }
 
-  // Drag-and-drop
   const dropZone = document.getElementById('dropZone');
   dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
   dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
@@ -411,31 +729,23 @@
     }
   });
 
-  // ── Upload ───────────────────────────────────────────────────────────────
   async function uploadFile() {
     if (!selectedFile) return;
-
     setUploadLoading(true);
-
     const formData = new FormData();
     formData.append('file', selectedFile);
-
     try {
-      const res  = await fetch(`${API}/api/admin/knowledge/upload`, {
-        method: 'POST',
-        body: formData,
-      });
+      const res  = await fetch(`${API}/api/admin/knowledge/upload`, { method: 'POST', body: formData });
       const data = await res.json();
-
       if (data.success) {
-        showToast(`✅ "${data.filename}" embedded into ${data.totalChunks} chunks`, 'success');
+        showToast(`"${data.filename}" embedded into ${data.totalChunks} chunks`, 'success');
         clearFile();
-        await loadDocuments();   // refresh the list
+        await loadDocuments();
       } else {
-        showToast(`❌ Upload failed: ${data.error}`, 'error');
+        showToast(`Upload failed: ${data.error}`, 'error');
       }
     } catch {
-      showToast('❌ Could not reach the server.', 'error');
+      showToast('Could not reach the server.', 'error');
     } finally {
       setUploadLoading(false);
     }
@@ -452,11 +762,9 @@
     setSyncLoading(true);
     const resultEl = document.getElementById('syncResult');
     resultEl.className = 'sync-result';
-
     try {
       const res  = await fetch(`${API}/api/admin/sync-products`, { method: 'POST' });
       const data = await res.json();
-
       resultEl.classList.add('visible');
       if (data.success) {
         resultEl.classList.add('success');
@@ -470,7 +778,6 @@
     } catch {
       resultEl.classList.add('visible', 'error');
       resultEl.textContent = '❌ Could not reach the server.';
-      showToast('Could not reach the server.', 'error');
     } finally {
       setSyncLoading(false);
     }
@@ -480,6 +787,125 @@
     document.getElementById('syncSpinner').classList.toggle('visible', loading);
     document.getElementById('syncBtnText').textContent = loading ? 'Syncing…' : '⚡ Sync Products from Shopify';
     document.getElementById('syncBtn').disabled = loading;
+  }
+
+  // ── Pricing engine ───────────────────────────────────────────────────────
+  async function loadPricingConfig() {
+    try {
+      const res = await fetch(`${API}/api/admin/discounts/config`);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Failed to load pricing config');
+
+      const config = data.config || {};
+      document.getElementById('pricingEnabled').checked = Boolean(config.enabled);
+      document.getElementById('maxDiscountPercent').value = config.maxDiscountPercent ?? 15;
+      document.getElementById('hesitationThreshold').value = config.hesitationThreshold ?? 55;
+      document.getElementById('offerTtlMinutes').value = config.offerTtlMinutes ?? 30;
+      document.getElementById('budgetUsd').value = config.budgetUsd ?? '';
+      document.getElementById('excludedProductIds').value = Array.isArray(config.excludedProductIds)
+        ? config.excludedProductIds.join(', ')
+        : '';
+      setPricingStatus('Pricing config loaded.', 'info');
+    } catch (error) {
+      setPricingStatus(`Could not load pricing config: ${error.message}`, 'error');
+    }
+  }
+
+  async function savePricingConfig() {
+    setPricingLoading(true);
+    try {
+      const rawBudget = document.getElementById('budgetUsd').value.trim();
+      const excluded = document.getElementById('excludedProductIds').value
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const payload = {
+        enabled: document.getElementById('pricingEnabled').checked,
+        maxDiscountPercent: Number(document.getElementById('maxDiscountPercent').value),
+        hesitationThreshold: Number(document.getElementById('hesitationThreshold').value),
+        offerTtlMinutes: Number(document.getElementById('offerTtlMinutes').value),
+        budgetUsd: rawBudget === '' ? null : Number(rawBudget),
+        excludedProductIds: excluded,
+      };
+
+      const res = await fetch(`${API}/api/admin/discounts/config`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to save pricing config');
+      }
+
+      setPricingStatus('Pricing config saved.', 'success');
+      showToast('Pricing config updated', 'success');
+      await loadPricingEvents();
+    } catch (error) {
+      setPricingStatus(`Could not save pricing config: ${error.message}`, 'error');
+      showToast(`Pricing save failed: ${error.message}`, 'error');
+    } finally {
+      setPricingLoading(false);
+    }
+  }
+
+  async function loadPricingEvents() {
+    const el = document.getElementById('pricingEvents');
+    try {
+      const res = await fetch(`${API}/api/admin/pricing/events`);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Failed to load pricing events');
+      renderPricingEvents(data.events || []);
+    } catch {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div>Could not load pricing events.</div>`;
+    }
+  }
+
+  function renderPricingEvents(events) {
+    const el = document.getElementById('pricingEvents');
+    if (!events.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">🏷️</div>No pricing events yet. Open the chat demo and ask for a discount.</div>`;
+      return;
+    }
+
+    el.innerHTML = events.map(event => {
+      const date = new Date(event.createdAt).toLocaleString('en-GB', {
+        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+      });
+      const status = event.outcome || 'offered';
+      const context = event.contextVector || {};
+      const statusClass = `status-${String(status).replace(/_/g, '-')}`;
+      return `
+        <div class="pricing-event">
+          <div class="pricing-event-head">
+            <div class="pricing-event-title">${escHtml(String(event.discountCode || 'offer'))}</div>
+            <span class="status-badge ${escHtml(statusClass)}">${escHtml(status)}</span>
+          </div>
+          <div class="pricing-event-meta">
+            <span>${date}</span>
+            <span>Arm: ${escHtml(String(event.armSelected ?? 'n/a'))}%</span>
+            <span>Reward: ${escHtml(String(event.reward ?? 'n/a'))}</span>
+          </div>
+          <div class="pricing-event-context">
+            Hesitation ${escHtml(String(context.hesitationScore ?? 'n/a'))}, cart $${escHtml(String(context.cartValue ?? '0'))},
+            sessions ${escHtml(String(context.productSearchCount ?? 0))} product search hit(s), ${escHtml(String(context.negotiationCount ?? 0))} negotiation hit(s).
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function setPricingLoading(loading) {
+    document.getElementById('pricingSpinner').classList.toggle('visible', loading);
+    document.getElementById('pricingBtnText').textContent = loading ? 'Saving…' : 'Save Pricing Config';
+    document.getElementById('savePricingBtn').disabled = loading;
+  }
+
+  function setPricingStatus(message, type = 'info') {
+    const el = document.getElementById('pricingStatus');
+    el.textContent = message;
+    el.className = `pricing-status visible ${type}`;
   }
 
   // ── Toast ────────────────────────────────────────────────────────────────

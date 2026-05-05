@@ -109,6 +109,16 @@ export class ShopifyService {
               description
               tags
               totalInventory
+              priceRange {
+                minVariantPrice {
+                  amount
+                  currencyCode
+                }
+                maxVariantPrice {
+                  amount
+                  currencyCode
+                }
+              }
               featuredImage {
                 url
               }
@@ -138,9 +148,11 @@ export class ShopifyService {
       }>(graphql);
 
       return data.products.edges.map((edge) => edge.node);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Shopify sync fetch error:", error);
-      throw new Error("Failed to fetch products for sync");
+      throw new Error(
+        `Failed to fetch products for sync: ${error.message ?? "Unknown Shopify error"}`
+      );
     }
   }
   
@@ -406,6 +418,71 @@ export class ShopifyService {
     return {
       id: result.draftOrder.id,
       invoiceUrl: result.draftOrder.invoiceUrl,
+    };
+  }
+
+  /**
+   * Create a single-use discount code for a negotiation offer.
+   * Falls back to local pricing-state tracking if Shopify rejects the mutation.
+   */
+  async createDiscountCode(input: {
+    code: string;
+    title: string;
+    discountPercent: number;
+    startsAt: Date;
+    endsAt: Date;
+    usageLimit: number;
+  }): Promise<{ id?: string }> {
+    const graphql = `
+      mutation DiscountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+        discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+          codeDiscountNode {
+            id
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
+
+    const basicCodeDiscount: any = {
+      title: input.title,
+      code: input.code,
+      startsAt: input.startsAt.toISOString(),
+      endsAt: input.endsAt.toISOString(),
+      usageLimit: input.usageLimit,
+      appliesOncePerCustomer: true,
+      customerSelection: { all: true },
+      customerGets: {
+        value: {
+          percentage: input.discountPercent / 100,
+        },
+        items: {
+          all: true,
+        },
+      },
+      combinesWith: {
+        orderDiscounts: false,
+        productDiscounts: false,
+        shippingDiscounts: false,
+      },
+    };
+
+    const data = await this.query<{ discountCodeBasicCreate: any }>(graphql, {
+      basicCodeDiscount,
+    });
+
+    const result = data.discountCodeBasicCreate;
+
+    if (result.userErrors && result.userErrors.length > 0) {
+      const errors = result.userErrors.map((e: any) => e.message).join("; ");
+      throw new Error(`Discount code creation failed: ${errors}`);
+    }
+
+    return {
+      id: result.codeDiscountNode?.id,
     };
   }
 

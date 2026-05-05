@@ -31,9 +31,8 @@ router.post("/upload", upload.single("file"), async (req: Request, res: Response
         const storeId = await getOrCreateDefaultStore();
         const extractedText = await ragService.extractTextFromFile(buffer, mimetype);
 
-        // 2. Split the text into overlapping chunks
-        // We are passing smaller numbers here (50 max, 10 overlap) just to test it with our small text file!
-        const chunks = ragService.chunkText(extractedText, 50, 10);
+        // 2. Split the text into sentence-aware overlapping chunks
+        const chunks = ragService.chunkText(extractedText);
 // 3. Generate Embeddings and Save to Database
     await ragService.embedAndStoreChunks(storeId, originalname, chunks);
 
